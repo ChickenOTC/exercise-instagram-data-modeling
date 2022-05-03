@@ -29,6 +29,61 @@ class Address(Base):
     def to_dict(self):
         return {}
 
+class Post(Base):
+    __tablename__ = "Post"
+    id = Column(Integer, primary_key=True)
+    likes = Column(String(250), nullable=False)
+    favorites = Column(String(250), nullable=False)
+    image = Column(String(250), nullable=False)
+    comments = Column(String(250), nullable=False)
+    # image_id = Column(Integer, ForeignKey('image.id'))
+    # image = relationship(Image)
+    comments_id = Column(Integer, ForeignKey('comments.id'))
+    comments = relationship('Comments')
+    # likes_id = Column(Integer, ForeignKey('likes.id'))
+    # likes = relationship('Likes')
+
+class Media(Base):
+    __tablename__ = 'Media'
+    id = Column(Integer, primary_key=True)
+    type = Column(String(50), nullable=False)
+    url = Column(String(250))
+    post_id = Column(Integer, ForeignKey('Post.id'))
+    post = relationship('post')
+
+class User(Base):
+    __tablename__ = 'User'
+    # Here we define columns for the table address.
+    # Notice that each column is also a normal Python instance attribute.
+    id = Column(Integer, primary_key=True)
+    first_name = Column(String(250), nullable=False)
+    last_name = Column(String(250), nullable=False)
+    user_id = Column(String(250), nullable=False)
+    password = Column(String(250), nullable=False)
+    post_code = Column(String(250), nullable=False)
+    post_id = Column(Integer, ForeignKey('post.id'))
+    post = relationship('Post')
+
+
+class Comment(Base):
+    __tablename__ = "Comment"
+    id = Column(Integer, primary_key=True)
+    comment_text = Column(String(250), nullable=False)
+    user_id = Column(Integer, ForeignKey('User.id'))
+    user = relationship('User')
+    post_id = Column(Integer, ForeignKey('post.id'))
+    post = relationship('Post')
+
+class Follower(Base):
+    __tablename__ = "Follower"
+    id = Column(Integer, primary_key=True)
+    user_to_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    user_from_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('User.id'))
+    user = relationship('User')
+
+
+    
 ## Draw from SQLAlchemy base
 try:
     result = render_er(Base, 'diagram.png')
